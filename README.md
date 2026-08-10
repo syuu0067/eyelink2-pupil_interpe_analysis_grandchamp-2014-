@@ -20,6 +20,13 @@
  もし、報告と再開の地点のメッセージ名を変更したい場合は`read.edf`の`start_marker`と`end_marker`を変更してください。startを再開時、endをMW報告時にするとよいです<br>
  後でどういった下処理をしているか書きます<br>
 
+## 行われる処理
+edfファイルから右目のみのデータを抜き取り、瞳孔径と眼球座標の値が０もしくはNAから前100ms、後300msの範囲を瞬目とし全てNAに変換した後、線形補完を行います。その際データセットの端が補完対象の場合は不完全なデータで補完されないよう、NAのままにしておくようになっています。<br>
+瞳孔径の変化速度を計算し、pupil_velocity_average ＋－ SD*σの閾値に沿って線形補完を行います。σ＝1.5の定数<br>
+最初に補完した瞬目範囲を差し戻します。
+
+
+
  # R Code for Replicating Grandchamp et al. (2014)
 
 This set of R scripts is intended to be used together with the MATLAB code in `pupil_grandchamp`.<br>

@@ -7,9 +7,9 @@ library(patchwork)
 library(dplyr)
 library(zoo)
 
-subject <- "s1"
+subject <- "s4"
 
-i <- 1
+i <- 1 ##Don't touch!
 f<- i
 mwdat <- list()
 rfdat <- list()

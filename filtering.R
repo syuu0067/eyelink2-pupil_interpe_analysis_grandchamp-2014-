@@ -8,7 +8,7 @@ library(dplyr)
 library(zoo)
 #データの読み込み
 
-subject <- "102"
+subject <- "402"
 
 read_edf_file <- paste("s",subject,"mw.edf",sep ="")
 
@@ -413,12 +413,39 @@ final_dat <- final_dat %>%
   mutate(
     trial_row = row_number(),
     n_trial = n(),
+    mid_2500 = (n_trial/2 - 1250) < trial_row & trial_row <= (n_trial/2 + 1250),
     last_2500 = trial_row > n_trial - 2500,
     first_2500 = trial_row <= 2500
   ) %>%
   ungroup()
 
 last_trial <- max(final_dat$trial, na.rm = TRUE)
+
+ct_dat <- final_dat %>%
+  filter(
+    mid_2500 == TRUE,
+    trial != last_trial
+  ) %>%
+  dplyr::select(
+    trial,
+    time_rel,
+    x = vx,
+    y = vy,
+    pupil = pupil_final,
+    for_blink_duration = pupil_for_interp_second,
+    blink_duration,
+    interped
+  ) 
+
+ct_dat <- ct_dat %>%
+  arrange(trial, time_rel) %>%
+  group_by(trial) %>%
+  mutate(
+    trial_end_time = last(time_rel),
+    time= (time_rel - trial_end_time) / 1000
+  ) %>%
+  slice(1:(n()-250))%>%
+  ungroup()
 
 mw_dat <- final_dat %>%
   filter(
@@ -512,4 +539,5 @@ rf_dat <- rf_dat %>%
 
 write.csv(mw_dat,paste("s",subject,"_mw_dat.csv", sep = ""),row.names = FALSE)
 write.csv(rf_dat,paste("s",subject,"_rf_dat.csv", sep = ""),row.names = FALSE)
+write.csv(ct_dat,paste("s",subject,"_ct_dat.csv", sep = ""),row.names = FALSE)
 

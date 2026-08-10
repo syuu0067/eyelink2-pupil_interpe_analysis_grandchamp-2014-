@@ -12,6 +12,8 @@ mw_filename <- paste(subject,"_mw_all.csv",sep="")
 rf_filename <- paste(subject,"_rf_all.csv",sep="")
 mw_dat <- read.csv(mw_filename)
 rf_dat <- read.csv(rf_filename)
+
+max(mw_dat$trial)
 ##図形描写
 mw_median <- mw_dat %>%
   group_by(time) %>%
@@ -85,7 +87,7 @@ rf_mean_trial <- rf_dat %>%
 ##これいらんかも。AIはデフォルト推奨、これは吉史先生推奨
 library(exactRankTests)
 wilcox.exact(mw_mean_trial$mean_pupil_trial,rf_mean_trial$mean_pupil_trial)
-wilcox.exact(mw_mean_trial$sd_pupil_trial,rf_mean_trial$sd_pupil_trial)wi
+wilcox.exact(mw_mean_trial$sd_pupil_trial,rf_mean_trial$sd_pupil_trial)
 t.test(mw_mean_trial$mean_pupil_trial,rf_mean_trial$mean_pupil_trial)
 ##瞳孔径の平均値
 data.frame(
@@ -163,7 +165,7 @@ rf_blink <- rf_dat %>%
   arrange(trial,time_rel) %>%
   group_by(trial) %>%
   summarise(blink_sample_counts=(sum(is.na(for_blink_duration))-3)*4,
-            nmber_of_blink = max(blink_count)/2) %>%
+            number_of_blink = max(blink_count)/2) %>%
   mutate(blink_duration_rate = (blink_sample_counts/9000)*100)
 
 mw_blink <- mw_dat %>%
