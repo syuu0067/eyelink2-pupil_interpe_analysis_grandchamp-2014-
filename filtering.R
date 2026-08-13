@@ -8,7 +8,7 @@ library(dplyr)
 library(zoo)
 #データの読み込み
 
-subject <- "402"
+subject <- "102"
 
 read_edf_file <- paste("s",subject,"mw.edf",sep ="")
 
@@ -321,7 +321,7 @@ ungroup()
 second_dat <- second_dat %>%
   group_by(trial)%>%
   mutate(
-    blink_duration = saccade_detection
+    blink_duration = saccade_detection & blink_window
   )%>%
   ungroup()
 
@@ -349,6 +349,7 @@ second_dat <- second_dat %>%
 
 second_dat <- second_dat %>%
   arrange(trial,time_rel) %>%
+  group_by(trial)%>%
   mutate(
     blink_group = cumsum(
       blink_duration != lag(blink_duration, default = first(blink_duration))

@@ -7,7 +7,7 @@ library(patchwork)
 library(dplyr)
 library(zoo)
 
-subject <- "s4"
+subject <- "s1"
 
 i <- 1 ##Don't touch!
 f<- i

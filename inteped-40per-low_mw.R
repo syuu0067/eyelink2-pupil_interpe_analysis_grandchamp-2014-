@@ -4,7 +4,7 @@ setwd("~/pupil/data")
 library(dplyr)
 
 #データ取込
-subject <- "s4"
+subject <- "s1"
 data_num <- 2
 data_num <- sprintf("%02d",data_num)
 file_name <- paste(subject,data_num,"_mw_dat.csv", sep="")

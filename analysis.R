@@ -7,7 +7,7 @@ library(patchwork)
 library(dplyr)
 library(zoo)
 ##解析
-subject <- "s2"
+subject <- "s4"
 mw_filename <- paste(subject,"_mw_all.csv",sep="")
 rf_filename <- paste(subject,"_rf_all.csv",sep="")
 mw_dat <- read.csv(mw_filename)
@@ -192,8 +192,8 @@ wilcox.exact(mw_blink$blink_sample_counts,rf_blink$blink_sample_counts)
 ##blink rate
 data.frame(
   RF = c(
-    minutes_blink_rate = mean(rf_blink$nmber_of_blink)*6.67,
-    SD = sd(rf_blink$nmber_of_blink)
+    minutes_blink_rate = mean(rf_blink$number_of_blink)*6.67,
+    SD = sd(rf_blink$number_of_blink)
   ),
   MW = c(
     minutes_blink_rate = mean(mw_blink$number_of_blink)*6.67,
@@ -201,7 +201,7 @@ data.frame(
   )
 )
 
-wilcox.exact(mw_blink$number_of_blink,rf_blink$nmber_of_blink)
+wilcox.exact(mw_blink$number_of_blink,rf_blink$number_of_blink)
 
 ##水平座標　平均
 mw_gaze_mean <- mw_dat %>%
