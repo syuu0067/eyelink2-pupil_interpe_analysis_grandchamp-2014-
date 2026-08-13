@@ -8,7 +8,7 @@ library(dplyr)
 library(zoo)
 #データの読み込み
 
-subject <- "101"
+subject <- "102"
 
 read_edf_file <- paste("s",subject,"mw.edf",sep ="")
 
@@ -550,6 +550,12 @@ mw_dat <- mw_dat %>%
   )
 
 rf_dat <- rf_dat %>%
+  arrange(trial, time_rel) %>%
+  mutate(
+    trial = dense_rank(trial)
+  )
+
+  ct_dat <- ct_dat %>%
   arrange(trial, time_rel) %>%
   mutate(
     trial = dense_rank(trial)
