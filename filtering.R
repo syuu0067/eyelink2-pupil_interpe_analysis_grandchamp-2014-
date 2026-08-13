@@ -1,5 +1,5 @@
 rm(list=ls())
-setwd("~/pupil/data")
+setwd("../data")
 #APIキーの指定
 Sys.setenv(EDFAPI = "C:/Program Files (x86)/SR Research/EyeLink/EDF_Access_API")
 #必要パッケージの参照
@@ -8,7 +8,7 @@ library(dplyr)
 library(zoo)
 #データの読み込み
 
-subject <- "102"
+subject <- "101"
 
 read_edf_file <- paste("s",subject,"mw.edf",sep ="")
 

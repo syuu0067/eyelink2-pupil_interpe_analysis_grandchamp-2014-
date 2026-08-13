@@ -1,6 +1,6 @@
 ##ファイル結合用　同一被験者のみに適用すること
 rm(list = ls())
-setwd("~/pupil/data")
+setwd("../data")
 library(ggplot2)
 library(tidyverse)
 library(patchwork)

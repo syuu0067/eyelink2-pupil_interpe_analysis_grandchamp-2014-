@@ -1,6 +1,6 @@
 # 解析開始 --------------------------------------------------------------------
 rm(list=ls())
-setwd("~/pupil/data")
+setwd("../data")
 library(ggplot2)
 library(tidyverse)
 library(patchwork)
@@ -100,44 +100,6 @@ data.frame(
     SD = mean(mw_mean_trial$sd_pupil_trial)
   )
 )
-
-#瞬目持続時間を出す。下処理内のデータフレームに手を出すからエラーの原因かも
-rf_dat <- rf_dat %>%
-  arrange(trial, time) %>%
-  group_by(trial) %>%
-  mutate(
-    blink = !is.na(for_blink_duration),
-    blink_count = cumsum(
-      blink != lag(blink, default = first(blink))
-    )
-  ) %>%
-  ungroup()
-
-mw_dat <- mw_dat %>%
-  arrange(trial, time) %>%
-  group_by(trial) %>%
-  mutate(
-    blink = !is.na(for_blink_duration),
-    blink_count = cumsum(
-      blink != lag(blink, default = first(blink))
-    )
-  ) %>%
-  ungroup()
-
-
-rf_blink <- rf_dat %>%
-  arrange(trial,time_rel) %>%
-  group_by(trial) %>%
-  summarise(blink_sample_counts=(sum(is.na(for_blink_duration))-3)*4,
-            nmber_of_blink = max(blink_count)/2) %>%
-  mutate(blink_duration_rate = (blink_sample_counts/9000)*100)
-
-mw_blink <- mw_dat %>%
-  arrange(trial,time_rel) %>%
-  group_by(trial) %>%
-  summarise(blink_sample_counts=(sum(is.na(for_blink_duration))-3)*4,
-            number_of_blink = max(blink_count)/2) %>%
-  mutate(blink_duration_rate = (blink_sample_counts/9000)*100)
 
 #engbertの適応範囲を変えた場合
 rf_dat <- rf_dat %>%

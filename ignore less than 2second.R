@@ -1,6 +1,6 @@
 #除外用コード
 rm(list=ls())
-setwd("~/pupil/data")
+setwd("../data")
 library(dplyr)
 
 #データ取込
