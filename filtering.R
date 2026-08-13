@@ -422,6 +422,23 @@ final_dat <- final_dat %>%
 
 last_trial <- max(final_dat$trial, na.rm = TRUE)
 
+final_dat <- final_dat%>%
+  arrange(trial,time_rel)%>%
+  group_by(trial)%>%
+  mutate(
+    x_interp = na.approx(
+      x,
+      x = time_rel,
+      na.rm = FALSE
+    ),
+    y_interp = na.approx(
+      y,
+      x = time_rel,
+      na.rm = FALSE
+    )
+  )%>%
+  ungroup()
+  
 ct_dat <- final_dat %>%
   filter(
     mid_2500 == TRUE,
@@ -430,8 +447,8 @@ ct_dat <- final_dat %>%
   dplyr::select(
     trial,
     time_rel,
-    x = vx,
-    y = vy,
+    x = x_interp,
+    y = y_interp,
     pupil = pupil_final,
     for_blink_duration = pupil_for_interp_second,
     blink_duration,
@@ -456,8 +473,8 @@ mw_dat <- final_dat %>%
   dplyr::select(
     trial,
     time_rel,
-    x = vx,
-    y = vy,
+    x = x_interp,
+    y = y_interp,
     pupil = pupil_final,
     for_blink_duration = pupil_for_interp_second,
     blink_duration,
@@ -493,8 +510,8 @@ rf_dat <- final_dat %>%
   dplyr::select(
     trial,
     time_rel,
-    x = vx,
-    y = vy,
+    x = x_interp,
+    y = y_interp,
     pupil = pupil_final,
     for_blink_duration = pupil_for_interp_second,
     blink_duration,

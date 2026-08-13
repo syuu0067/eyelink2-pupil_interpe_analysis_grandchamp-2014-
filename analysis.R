@@ -7,7 +7,7 @@ library(patchwork)
 library(dplyr)
 library(zoo)
 ##解析
-subject <- "s4"
+subject <- "s1"
 mw_filename <- paste(subject,"_mw_all.csv",sep="")
 rf_filename <- paste(subject,"_rf_all.csv",sep="")
 mw_dat <- read.csv(mw_filename)
@@ -92,12 +92,12 @@ t.test(mw_mean_trial$mean_pupil_trial,rf_mean_trial$mean_pupil_trial)
 ##瞳孔径の平均値
 data.frame(
   RF = c(
-    Mean = mean(mw_mean_trial$mean_pupil_trial),
-    SD = mean(mw_mean_trial$sd_pupil_trial)
-  ),
-  MW = c(
     Mean = mean(rf_mean_trial$mean_pupil_trial) ,
     SD = mean(rf_mean_trial$sd_pupil_trial)
+  ),
+  MW = c(
+    Mean = mean(mw_mean_trial$mean_pupil_trial),
+    SD = mean(mw_mean_trial$sd_pupil_trial)
   )
 )
 
