@@ -8,7 +8,7 @@ library(dplyr)
 library(zoo)
 #データの読み込み
 
-subject <- "102"
+subject <- "101"
 
 read_edf_file <- paste("s",subject,"mw.edf",sep ="")
 
@@ -468,7 +468,7 @@ final_dat <- final_dat %>%
   group_by(trial) %>%
   group_modify(~ {
     s <- .x
-    z <- zero_segments %>% filter(trial == .y$trial)
+    z <- final_segments %>% filter(trial == .y$trial)
     
     if (nrow(z) == 0) {
       s$blink_interp <- FALSE
