@@ -4,8 +4,8 @@ setwd("../data")
 library(dplyr)
 
 #データ取込
-subject <- "s1"
-data_num <- 2
+subject <- "s4"
+data_num <- 1
 data_num <- sprintf("%02d",data_num)
 mw_name <- paste(subject,data_num,"_mw_dat.csv", sep="")
 mw_data <- read.csv(mw_name)

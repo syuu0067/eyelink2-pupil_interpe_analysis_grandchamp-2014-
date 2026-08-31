@@ -25,8 +25,8 @@ samples <- blink_raw$samples %>%
   dplyr::select(
     trial,
     eye,
-    time,
-    time_rel,
+    time,     
+    time_rel,   
     x = gxR,
     y = gyR,
     pupil = paR
@@ -438,7 +438,69 @@ final_dat <- final_dat%>%
     )
   )%>%
   ungroup()
-  
+
+
+#0とNA（瞬目）を判別し、0かNAのまとまりが来るたびにグループ番号が増えるようにする
+final_dat <- final_dat %>%
+  arrange(trial, time_rel) %>%
+  group_by(trial) %>%
+  mutate(,
+    zero_group = cumsum(
+      blink_duration != lag(blink_duration, default = first(blink_duration))
+    )
+  ) %>%
+  ungroup()
+#瞬目の開始時間と終了時間を取り出し、保守的な検出の時間を定義
+final_segments <- final_dat %>%
+  filter(blink_duration) %>%
+  group_by(trial, zero_group) %>%
+  summarise(
+    zero_start = min(time_rel, na.rm = TRUE),
+    zero_end = max(time_rel, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    bad_start = zero_start ,
+    bad_end = zero_end + 1000
+  )
+#先ほどの時間を使って保守的な瞬目期間の判定列を作る
+final_dat <- final_dat %>%
+  group_by(trial) %>%
+  group_modify(~ {
+    s <- .x
+    z <- zero_segments %>% filter(trial == .y$trial)
+    
+    if (nrow(z) == 0) {
+      s$blink_interp <- FALSE
+    } else {
+      s$blink_interp <- sapply(
+        s$time_rel,
+        function(t) any(t >= z$bad_start & t <= z$bad_end)
+      )
+    }
+    
+    s
+  }) %>%
+  ungroup()
+#保守的な瞬目期間をNAに置き換えた列を作成
+final_dat <- final_dat %>%
+  mutate(
+    interp_for_miosis = if_else(blink_interp, NA_real_, pupil_final)
+  )
+
+final_dat <- final_dat %>%
+  arrange(trial, time_rel) %>%
+  group_by(trial) %>%
+  mutate(
+    miosis_interped = na.approx(
+      interp_for_miosis,
+      x = time_rel,
+      na.rm = FALSE
+    )
+  ) %>%
+  ungroup()
+
+
 ct_dat <- final_dat %>%
   filter(
     mid_2500 == TRUE,
@@ -449,7 +511,7 @@ ct_dat <- final_dat %>%
     time_rel,
     x = x_interp,
     y = y_interp,
-    pupil = pupil_final,
+    pupil = miosis_interped,
     for_blink_duration = pupil_for_interp_second,
     blink_duration,
     interped
@@ -475,7 +537,7 @@ mw_dat <- final_dat %>%
     time_rel,
     x = x_interp,
     y = y_interp,
-    pupil = pupil_final,
+    pupil = miosis_interped,
     for_blink_duration = pupil_for_interp_second,
     blink_duration,
     interped
@@ -512,7 +574,7 @@ rf_dat <- final_dat %>%
     time_rel,
     x = x_interp,
     y = y_interp,
-    pupil = pupil_final,
+    pupil = miosis_interped,
     for_blink_duration = pupil_for_interp_second,
     blink_duration,
     interped
@@ -566,4 +628,3 @@ write.csv(rf_dat,paste("s",subject,"_rf_dat.csv", sep = ""),row.names = FALSE)
 write.csv(ct_dat,paste("s",subject,"_ct_dat.csv", sep = ""),row.names = FALSE)
 
 print("データの処理が完了しました。")
-

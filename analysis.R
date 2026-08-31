@@ -126,40 +126,42 @@ mw_dat <- mw_dat %>%
 rf_blink <- rf_dat %>%
   arrange(trial,time_rel) %>%
   group_by(trial) %>%
-  summarise(blink_sample_counts=(sum(is.na(for_blink_duration))-3)*4,
+  summarise(blink_sample_counts=sum(blink_duration)*4,
             number_of_blink = max(blink_count)/2) %>%
-  mutate(blink_duration_rate = (blink_sample_counts/9000)*100)
+  mutate(blink_duration_rate = (blink_sample_counts/9000)*100,
+            blink_duration_mean = blink_sample_counts/number_of_blink)
 
 mw_blink <- mw_dat %>%
   arrange(trial,time_rel) %>%
   group_by(trial) %>%
-  summarise(blink_sample_counts=(sum(is.na(for_blink_duration))-3)*4,
+  summarise(blink_sample_counts=sum(blink_duration)*4,
             number_of_blink = max(blink_count)/2) %>%
-  mutate(blink_duration_rate = (blink_sample_counts/9000)*100)
+  mutate(blink_duration_rate = (blink_sample_counts/9000)*100,
+            blink_duration_mean = blink_sample_counts/number_of_blink)
 
 #瞬目持続時間の平均、SD
 data.frame(
   RF = c(
-    Mean = mean(rf_blink$blink_sample_counts),
-    SD = sd(rf_blink$blink_sample_counts)
+    Mean = mean(rf_blink$blink_duration_mean, na.rm = TRUE),
+    SD = sd(rf_blink$blink_duration_mean, na.rm = TRUE)
   ),
   MW = c(
-    Mean = mean(mw_blink$blink_sample_counts) ,
-    SD = sd(mw_blink$blink_sample_counts)
+    Mean = mean(mw_blink$blink_duration_mean, na.rm = TRUE),
+    SD = sd(mw_blink$blink_duration_mean, na.rm = TRUE)
   )
 )
 
-wilcox.exact(mw_blink$blink_sample_counts,rf_blink$blink_sample_counts)
+wilcox.exact(mw_blink$blink_duration_mean,rf_blink$blink_duration_mean)
 
 ##blink rate
 data.frame(
   RF = c(
-    minutes_blink_rate = mean(rf_blink$number_of_blink)*6.67,
-    SD = sd(rf_blink$number_of_blink)
+    minutes_blink_rate = mean(rf_blink$number_of_blink, na.rm = TRUE)*6.67,
+    SD = sd(rf_blink$number_of_blink, na.rm = TRUE)
   ),
   MW = c(
-    minutes_blink_rate = mean(mw_blink$number_of_blink)*6.67,
-    SD = sd(mw_blink$number_of_blink)
+    minutes_blink_rate = mean(mw_blink$number_of_blink, na.rm = TRUE)*6.67,
+    SD = sd(mw_blink$number_of_blink, na.rm = TRUE)
   )
 )
 
@@ -190,16 +192,16 @@ rf_gaze_mean <- rf_dat %>%
 
 data.frame(
   RF = c(
-    Gaze_X_Pos.Mean = mean(rf_gaze_mean$mean_gaze_x),
-    Gaze_Y_Pos.Mean = mean(rf_gaze_mean$mean_gaze_y),
-    Gaze_X_Pos.std.Dev = sd(rf_gaze_mean$mean_gaze_x),
-    Gaze_Y_Pos.std.Dev = sd(rf_gaze_mean$mean_gaze_y)
+    Gaze_X_Pos.Mean = mean(rf_gaze_mean$mean_gaze_x, na.rm = TRUE),
+    Gaze_Y_Pos.Mean = mean(rf_gaze_mean$mean_gaze_y, na.rm = TRUE),
+    Gaze_X_Pos.std.Dev = sd(rf_gaze_mean$mean_gaze_x, na.rm = TRUE),
+    Gaze_Y_Pos.std.Dev = sd(rf_gaze_mean$mean_gaze_y, na.rm = TRUE)
   ),
   MW = c(
-    Gaze_X_Pos.Mean = mean(mw_gaze_mean$mean_gaze_x),
-    Gaze_Y_Pos.Mean = mean(mw_gaze_mean$mean_gaze_y),
-    Gaze_X_Pos.std.Dev = sd(mw_gaze_mean$mean_gaze_x),
-    Gaze_Y_Pos.std.Dev = sd(mw_gaze_mean$mean_gaze_y)
+    Gaze_X_Pos.Mean = mean(mw_gaze_mean$mean_gaze_x, na.rm = TRUE),
+    Gaze_Y_Pos.Mean = mean(mw_gaze_mean$mean_gaze_y, na.rm = TRUE),
+    Gaze_X_Pos.std.Dev = sd(mw_gaze_mean$mean_gaze_x, na.rm = TRUE),
+    Gaze_Y_Pos.std.Dev = sd(mw_gaze_mean$mean_gaze_y, na.rm = TRUE)
   )
 )
 
